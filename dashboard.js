@@ -1,13 +1,13 @@
-// This is our API key
-var APIKey = "3a4631bba926601a48de1c001dc7ac75";
+// API key
+const APIKey = "3a4631bba926601a48de1c001dc7ac75";
 
-// Here we are building the URL we need to query the database
+//Building the URL we need to query the database
 var queryURL =
   "https://api.openweathermap.org/data/2.5/weather?" +
   "q=Bujumbura,Burundi&appid=" +
   APIKey;
 
-// Here we run our AJAX call to the OpenWeatherMap API
+//AJAX call to the OpenWeatherMap API
 $.ajax({
   url: queryURL,
   method: "GET"
@@ -68,35 +68,34 @@ debugger;
 
 //Five day forecast
 
-var key = "3a4631bba926601a48de1c001dc7ac75";
-var city = "Bujumbura"; // Test case
-var url = "https://api.openweathermap.org/data/2.5/forecast";
+var citySearch = "Bujumbura"; // Test case
+var forecastURL = "https://api.openweathermap.org/data/2.5/forecast";
 
 $.ajax({
-  url: url, //API Call
+  url: forecastURL, //API Call
   dataType: "json",
   type: "GET",
   data: {
-    q: city,
-    appid: key,
+    q: citySearch,
+    appid: APIKey,
     units: "metric",
     cnt: "5"
   },
   success: function(data) {
     console.log("Received data:", data); // For testing
-    var wf = "";
-    wf += "<h2>" + data.city.name + "</h2>"; // City (displays once)
+    var weeklyForecast = "";
+    weeklyForecast += "<h2>" + data.city.name + "</h2>"; // City (displays once)
     $.each(data.list, function(index, val) {
-      wf += "<p>"; // Opening paragraph tag
-      wf += "<b>Day " + index + "</b>: "; // Day
-      wf += val.main.temp + "&degC"; // Temperature
-      wf += "<span> | " + val.weather[0].description + "</span>"; // Description
-      wf +=
+      weeklyForecast += "<p>"; // Opening paragraph tag
+      weeklyForecast += "<b>Day " + index + "</b>: "; // Day
+      weeklyForecast += val.main.temp + "&degC"; // Temperature
+      weeklyForecast += "<span> | " + val.weather[0].description + "</span>"; // Description
+      weeklyForecast +=
         "<img src='https://openweathermap.org/img/w/" +
         val.weather[0].icon +
         ".png'>"; // Icon
-      wf += "</p>"; // Closing paragraph tag
+      weeklyForecast += "</p>"; // Closing paragraph tag
     });
-    $("#showWeatherForcast").html(wf);
+    $("#showWeatherForcast").html(weeklyForecast);
   }
 });
