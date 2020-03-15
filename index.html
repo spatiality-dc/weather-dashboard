@@ -22,29 +22,46 @@
     <main>
       <div class="row">
         <div class="col-4">
-          <!-- City Searches Goes Here -->
-          <h3>Search for a city:</h3>
-          <!-- Search form -->
-          <input
-            class="form-control"
-            type="text"
-            placeholder="Find a forecast"
-            id="searchTerm"
-          />
+          <div class="row">
+            <div class="col-12">
+              <!-- City Searches Goes Here -->
+              <h3>Search for a city:</h3>
+              <!-- Search form -->
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Find a forecast"
+                id="searchTerm"
+              />
+            </div>
+          </div>
+          <div class="row" id="searchHistory">
+            <div class="col-12">
+              <h3>Search History</h3>
+              <ul id="searchList"></ul>
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                id="clearButton"
+              >
+                Clear history
+              </button>
+            </div>
+          </div>
         </div>
         <div class="col-8">
           <!-- API Call Content Goes Here -->
-          <div class="row">
+          <div class="row currentData">
             <div class="col-12">
               <div class="city"></div>
               <div class="wind"></div>
               <div class="humidity"></div>
               <div class="tempC"></div>
+              <div class="uvIndex"></div>
             </div>
           </div>
           <div class="row">
-            <div class="col-12">
-              <h2>Five day forecast goes here</h2>
+            <div class="col-12 forecastData">
               <div id="showWeatherForcast"></div>
             </div>
           </div>

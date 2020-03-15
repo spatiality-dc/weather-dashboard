@@ -1,3 +1,8 @@
+//Local storage variables
+var searchList = document.querySelector("#searchList");
+var searchHistory = []; //empty array to store searches
+const historyList = $("#historyList"); //<ul>  to store search history
+
 // API key
 const APIKey = "3a4631bba926601a48de1c001dc7ac75";
 
@@ -6,6 +11,7 @@ $("#searchTerm").on("keyup", function(e) {
     e.preventDefault();
     const searchTerm = e.currentTarget.value;
     updateForecast(searchTerm);
+    window.localStorage.setItem("last-search", searchTerm);
   }
 });
 
@@ -33,8 +39,11 @@ function updateForecast(location) {
 
       // Transfer content to HTML
       $(".city").html("<h1>" + response.name + " Weather Details</h1>");
-      $(".wind").text("Wind Speed: " + response.wind.speed);
-      $(".humidity").text("Humidity: " + response.main.humidity);
+      $(".wind").text("Wind Speed: " + response.wind.speed + " km/h");
+      $(".humidity").text("Humidity: " + response.main.humidity + "%");
+      $(".search-btn").text(searchTerm);
+      $(".search-btn").attr("Lon", response.coord.lon);
+      $(".search-btn").attr("Lat", response.coord.lat);
 
       // Convert the temp to celsius
       var tempC = response.main.temp - 273.15;
@@ -43,13 +52,14 @@ function updateForecast(location) {
       $(".tempC").text("Temperature (C): " + tempC.toFixed(2));
 
       // Log the data in the console as well
-      console.log("Wind Speed: " + response.wind.speed);
-      console.log("Humidity: " + response.main.humidity);
+      console.log("Wind Speed: " + response.wind.speed + "km/h");
+      console.log("Humidity: " + response.main.humidity + "%");
       console.log("Temperature (C): " + tempC);
+      console.log("Lon: " + response.coord.lon);
+      console.log("Lat: " + response.coord.lat);
     });
 
   //Five day forecast
-
   const forecastURL = "https://api.openweathermap.org/data/2.5/forecast";
 
   $.ajax({
@@ -79,5 +89,50 @@ function updateForecast(location) {
       });
       $("#showWeatherForcast").html(weeklyForecast);
     }
+  });
+
+  renderButtons();
+  // Function for displaying search history data
+  function renderButtons() {
+    // Deleting the buttons prior to adding new searches
+    // (this is necessary otherwise you will have repeat buttons)
+    $("#searchList").empty();
+
+    // Then dynamically generating buttons in the array
+    var a = $("<button>");
+    // Adding a class of movie to our button
+    a.addClass("search-btn");
+    // Providing the initial button text
+    a.text(searchTerm);
+    // Adding the button to the searchList div
+    $("#searchList").append(a);
+  }
+}
+
+// UV Index API call
+var lastSearchLat = a.attr("lat");
+var lastSearchLon = a.attr("lon");
+
+// function queryStringUV(lastSearchLat, lastSearchLon) {
+function queryStringUV() {
+  queryURLUV = "https://api.openweathermap.org/data/2.5/uvi?";
+  const APIKey = "3a4631bba926601a48de1c001dc7ac75";
+  return (
+    queryURLUV +
+    "lat=" +
+    lastSearchLat +
+    "&lon=" +
+    lastSearchLon +
+    "&appid=" +
+    APIKey
+  );
+}
+
+function UVSearch(queryStringUV) {
+  $.ajax({
+    url: queryStringUV,
+    method: "GET"
+  }).then(function(response) {
+    $(".uvIndex").html("<h1>" + response.value + " UV Index</h1>");
   });
 }
