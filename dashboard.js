@@ -41,7 +41,7 @@ function updateForecast(location) {
       $(".city").html("<h1>" + response.name + " Weather Details</h1>");
       $(".wind").text("Wind Speed: " + response.wind.speed + " km/h");
       $(".humidity").text("Humidity: " + response.main.humidity + "%");
-      $(".search-btn").text(searchTerm);
+      $(".search-btn").text(response.name);
       $(".search-btn").attr("Lon", response.coord.lon);
       $(".search-btn").attr("Lat", response.coord.lat);
 
@@ -57,6 +57,7 @@ function updateForecast(location) {
       console.log("Temperature (C): " + tempC);
       console.log("Lon: " + response.coord.lon);
       console.log("Lat: " + response.coord.lat);
+      console.log(searchHistory);
     });
 
   //Five day forecast
@@ -95,8 +96,8 @@ function updateForecast(location) {
   // Function for displaying search history data
   function renderButtons() {
     // Deleting the buttons prior to adding new searches
-    // (this is necessary otherwise you will have repeat buttons)
-    $("#searchList").empty();
+    // // (this is necessary otherwise you will have repeat buttons)
+    // $("#searchList").empty();
 
     // Then dynamically generating buttons in the array
     var a = $("<button>");
@@ -109,12 +110,13 @@ function updateForecast(location) {
   }
 }
 
-// UV Index API call
-var lastSearchLat = a.attr("lat");
-var lastSearchLon = a.attr("lon");
+// // UV Index API call
 
 // function queryStringUV(lastSearchLat, lastSearchLon) {
 function queryStringUV() {
+  var lastSearchLat = $(".search-btn").attr("Lat", value);
+  var lastSearchLon = $(".search-btn").attr("Lon", value);
+
   queryURLUV = "https://api.openweathermap.org/data/2.5/uvi?";
   const APIKey = "3a4631bba926601a48de1c001dc7ac75";
   return (
