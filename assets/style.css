@@ -9,3 +9,31 @@
   border: 1px solid red;
   border-radius: 5px;
 }
+
+.jumbotron-fluid {
+  text-align: center;
+  color: snow;
+  background-size: cover;
+  background-image: url("img/bg.jpg");
+  border-radius: 0;
+  border-bottom: 10px solid black;
+}
+
+.aside {
+  align-content: center;
+  padding: 100px;
+}
+
+#clearButton {
+  align-content: center;
+}
+
+@media screen and (min-width: 400px) {
+  .currentData {
+    align-content: center;
+  }
+
+  .forecastData {
+    align-content: center;
+  }
+}

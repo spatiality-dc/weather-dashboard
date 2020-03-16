@@ -12,22 +12,26 @@
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="assets/style.css" />
   </head>
 
   <body>
     <header>
-      <!-- heading/nav bar -->
-      <nav>
+      <div class="jumbotron jumbotron-fluid">
         <h1>Weather Dashboard</h1>
-      </nav>
+        <h3>Search the weather in your city, or any city across the globe!</h3>
+        <p>
+          This application will give you an accurate reading of weather
+          conditions for your chosen city, with a 5 day forecast.
+        </p>
+      </div>
     </header>
     <main>
       <div class="row" id="mainContainer">
-        <aside class="col-4">
-          Search:<br />
+        <aside class="col-4 aside">
+          Enter a city:<br />
           <input type="text" id="textboxSearch" />
-          <button id="search" onclick="searchFunction(), callAPI()">
+          <button id="search" onclick="searchFunction(), callAPI(), uvAPI()">
             Search</button
           ><br />
           Search History:
