@@ -158,7 +158,7 @@ function uvAPI(lat, long) {
   console.log("uvAPI function runs");
 
   var queryURL =
-    "http://api.openweathermap.org/data/2.5/uvi/forecast?" +
+    "https://api.openweathermap.org/data/2.5/uvi/forecast?" +
     "&appid=" +
     APIKey +
     "&lat=" +
