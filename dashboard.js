@@ -4,9 +4,27 @@ var recentSearches = [];
 // API key
 const APIKey = "3a4631bba926601a48de1c001dc7ac75";
 
+$(document).ready(function() {
+  $("#search").click(function() {
+    searchFunction();
+    callAPI();
+  });
+  //clear search history option//
+  $("#clearButton").click(function() {
+    localStorage.removeItem("searchHistory");
+    localStorage.removeItem("last-search");
+    location.reload();
+  });
+});
+
 //This function is called using the search buttons "onclick"
-function searchFunction(data) {
-  recentSearches.push($("#textboxSearch").val()); // This line puts the value from the text box in an array
+function searchFunction() {
+  var searchText = $("#textboxSearch").val();
+  if (searchText === "") {
+    console.log("You gotta put a word in there");
+    return null;
+  }
+  recentSearches.push(searchText); // This line puts the value from the text box in an array
   $("#textboxSearch").val(""); //  clear the text box after search
   $("#searchHistory").text(""); //clear the seach history window then repopulate with the new array
 
@@ -28,11 +46,25 @@ function addToTextBox(id) {
   $("#textboxSearch").val(recentSearches[id]);
 }
 
-//clear search history option//
-$("#clearButton").on("click", function() {
-  localStorage.removeItem("searchHistory");
-  location.reload();
-});
+function dayOfWeekForDate(date) {
+  var weekday = new Array(7);
+  weekday[0] = "Sunday";
+  weekday[1] = "Monday";
+  weekday[2] = "Tuesday";
+  weekday[3] = "Wednesday";
+  weekday[4] = "Thursday";
+  weekday[5] = "Friday";
+  weekday[6] = "Saturday";
+  return weekday[date.getDay()];
+}
+
+function dayForIndex(index, date) {
+  if (index === 0) {
+    return "Today";
+  } else if (index === 1) {
+    return "Tomorrow";
+  } else return dayOfWeekForDate(date);
+}
 
 function callAPI() {
   console.log("callAPI function runs");
@@ -72,6 +104,8 @@ function callAPI() {
       // add temp content to html
       $(".tempC").text("Temperature (C): " + tempC.toFixed(2));
 
+      uvAPI(response.coord.lat, response.coord.lon);
+
       // Log the data in the console as well
       console.log("Wind Speed: " + response.wind.speed + "km/h");
       console.log("Humidity: " + response.main.humidity + "%");
@@ -92,24 +126,60 @@ function callAPI() {
       q: location,
       appid: APIKey,
       units: "metric",
-      cnt: "5"
+      cnt: "40"
     },
     success: function(data) {
       console.log("Received data:", data);
       var weeklyForecast = "";
       weeklyForecast += "<h2>" + data.city.name + "</h2>"; // City
-      $.each(data.list, function(index, val) {
+      var dailyData = data.list.filter(function(element, index) {
+        return index % 8 === 0;
+      });
+      $.each(dailyData, function(index, value) {
         weeklyForecast += "<p>"; // Opening paragraph tag
-        weeklyForecast += "<b>Day " + index + "</b>: "; // Day
-        weeklyForecast += val.main.temp + "&degC"; // Temperature
-        weeklyForecast += "<span> | " + val.weather[0].description + "</span>"; // Description
+        weeklyForecast +=
+          "<b>" + dayForIndex(index, new Date(value.dt)) + "</b>: "; // Day
+        weeklyForecast += value.main.temp + "&degC"; // Temperature
+        weeklyForecast +=
+          "<span> | " + value.weather[0].description + "</span>"; // Description
         weeklyForecast +=
           "<img src='https://openweathermap.org/img/w/" +
-          val.weather[0].icon +
+          value.weather[0].icon +
           ".png'>"; // Icon
         weeklyForecast += "</p>"; // Closing
       });
       $("#showWeatherForcast").html(weeklyForecast);
     }
   });
+}
+
+// uv Index API Call
+function uvAPI(lat, long) {
+  console.log("uvAPI function runs");
+
+  var queryURL =
+    "http://api.openweathermap.org/data/2.5/uvi/forecast?" +
+    "&appid=" +
+    APIKey +
+    "&lat=" +
+    lat +
+    "&lon=" +
+    long;
+
+  //AJAX call to the OpenWeatherMap API
+  $.ajax({
+    url: queryURL,
+    method: "GET"
+  })
+    // We store all of the retrieved data inside of an object called "response"
+    .then(function(response) {
+      // Log the queryURL
+      console.log(queryURL);
+
+      // Log the resulting object
+      console.log(response);
+
+      // Transfer content to HTML
+      $(".uvIndex").html("<h3>" + response[0].value + " UV Index</h3>");
+    });
 }
