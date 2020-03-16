@@ -1,22 +1,43 @@
-//Local storage variables
-var searchList = document.querySelector("#searchList");
-var searchHistory = []; //empty array to store searches
-const historyList = $("#historyList"); //<ul>  to store search history
+// Create an empty javascript array
+var recentSearches = [];
 
 // API key
 const APIKey = "3a4631bba926601a48de1c001dc7ac75";
 
-$("#searchTerm").on("keyup", function(e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    const searchTerm = e.currentTarget.value;
-    updateForecast(searchTerm);
-    window.localStorage.setItem("last-search", searchTerm);
-  }
+//This function is called using the search buttons "onclick"
+function searchFunction(data) {
+  recentSearches.push($("#textboxSearch").val()); // This line puts the value from the text box in an array
+  $("#textboxSearch").val(""); //  clear the text box after search
+  $("#searchHistory").text(""); //clear the seach history window then repopulate with the new array
+
+  // the function below loops through the array and adds each item in the array
+  // to the span element within the Search history arear
+  $.each(recentSearches, function(index, value) {
+    $("#searchHistory").append(
+      "<li class='historyItem'  onclick='addToTextBox(" +
+        index +
+        ")'>" +
+        value +
+        "</li>"
+    );
+    localStorage.setItem("last-search", value);
+  });
+}
+
+function addToTextBox(id) {
+  $("#textboxSearch").val(recentSearches[id]);
+}
+
+//clear search history option//
+$("#clearButton").on("click", function() {
+  localStorage.removeItem("searchHistory");
+  location.reload();
 });
 
-function updateForecast(location) {
-  //Building the URL we need to query the database
+function callAPI() {
+  console.log("callAPI function runs");
+  var location = localStorage.getItem("last-search");
+
   var queryURL =
     "https://api.openweathermap.org/data/2.5/weather?" +
     "q=" +
@@ -90,51 +111,5 @@ function updateForecast(location) {
       });
       $("#showWeatherForcast").html(weeklyForecast);
     }
-  });
-
-  renderButtons();
-  // Function for displaying search history data
-  function renderButtons() {
-    // Deleting the buttons prior to adding new searches
-    // // (this is necessary otherwise you will have repeat buttons)
-    // $("#searchList").empty();
-
-    // Then dynamically generating buttons in the array
-    var a = $("<button>");
-    // Adding a class of movie to our button
-    a.addClass("search-btn");
-    // Providing the initial button text
-    a.text(searchTerm);
-    // Adding the button to the searchList div
-    $("#searchList").append(a);
-  }
-}
-
-// // UV Index API call
-
-// function queryStringUV(lastSearchLat, lastSearchLon) {
-function queryStringUV() {
-  var lastSearchLat = $(".search-btn").attr("Lat", value);
-  var lastSearchLon = $(".search-btn").attr("Lon", value);
-
-  queryURLUV = "https://api.openweathermap.org/data/2.5/uvi?";
-  const APIKey = "3a4631bba926601a48de1c001dc7ac75";
-  return (
-    queryURLUV +
-    "lat=" +
-    lastSearchLat +
-    "&lon=" +
-    lastSearchLon +
-    "&appid=" +
-    APIKey
-  );
-}
-
-function UVSearch(queryStringUV) {
-  $.ajax({
-    url: queryStringUV,
-    method: "GET"
-  }).then(function(response) {
-    $(".uvIndex").html("<h1>" + response.value + " UV Index</h1>");
   });
 }
