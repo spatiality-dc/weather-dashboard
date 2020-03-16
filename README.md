@@ -30,7 +30,7 @@ We were provided with the below gif as a reference for our work.
 
 Upon completion of the task, my web application can be seen in the image below.
 
-![homework finished](./documents/homework-completed.png)
+![homework finished](./assets/img/homework-completed.png)
 
 ## Results
 
